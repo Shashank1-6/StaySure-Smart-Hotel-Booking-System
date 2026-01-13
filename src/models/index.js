@@ -1,5 +1,5 @@
-
 module.exports = {
   Hotel: require("./Hotel"),
-  RoomType: require("./RoomType")
+  RoomType: require("./RoomType"),
+  Booking: require("./Booking")
 };
