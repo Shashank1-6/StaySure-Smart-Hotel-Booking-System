@@ -3,7 +3,11 @@ const Hotel = require("../models/Hotel");
 const RoomType = require("../models/RoomType");
 const { getBookedRoomCount } = require("../services/availability.service");
 
+const { expireOldBookings } = require("../services/bookingExpiry.service");
+
 const getAvailableRoomTypes = async (req, res) => {
+ await expireOldBookings();
+
   const { hotelId, checkInDate, checkOutDate } = req.query;
 
   if (!hotelId || !checkInDate || !checkOutDate) {
