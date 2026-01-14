@@ -1,5 +1,6 @@
 const Hotel = require("../models/Hotel");
 const RoomType = require("../models/RoomType");
+const { evaluateHotelConfidence } = require("../services/confidenceEngine.service");
 
 const searchHotels = async (req, res) => {
   const { location } = req.query;
@@ -22,10 +23,12 @@ const searchHotels = async (req, res) => {
     const roomTypes = await RoomType.find({
       hotelId: hotel._id
     });
+    const confidence = await evaluateHotelConfidence(hotel._id);
 
     result.push({
       ...hotel.toObject(),
-      roomTypes
+      roomTypes,
+      confidence
     });
   }
 
