@@ -39,9 +39,8 @@ export const BookingModal: React.FC<BookingModalProps> = ({
     setLoading(true);
     setError('');
     try {
-      const hotelId = hotel.id || hotel._id;
-      const res = await api.checkAvailability(hotelId, dates.checkIn, dates.checkOut);
-      if (res.success && res.data.length > 0) {
+ const hotelId = hotel.id || hotel._id;
+      const res = await api.checkAvailability(hotelId, dates.checkIn, dates.checkOut);      if (res.success && res.data.length > 0) {
         setAvailableRooms(res.data);
         setStep('rooms');
       } else {
@@ -59,14 +58,14 @@ export const BookingModal: React.FC<BookingModalProps> = ({
     setLoading(true);
     try {
       // Simple booking payload
-      const hotelId = hotel.id || hotel._id;
-
       const payload = {
-        hotelId: hotelId,
-        roomTypeId: selectedRoom.id||selectedRoom._id,
+        hotelId: hotel.id,
+        roomTypeId: selectedRoom.id,
         checkInDate: dates.checkIn,
         checkOutDate: dates.checkOut,
-        userId: "507f1f77bcf86cd799439001", 
+        guestName: guestDetails.name,
+        guestEmail: guestDetails.email,
+        totalPrice: selectedRoom.price // Assuming 1 night for simplicity in demo, or calc duration
       };
       
       const res = await api.createBooking(payload);

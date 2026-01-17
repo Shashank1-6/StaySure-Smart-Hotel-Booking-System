@@ -41,6 +41,7 @@ export const HotelCard: React.FC<HotelCardProps> = ({ hotel, searchCheckIn, sear
             <MapPin className="w-3.5 h-3.5" />
             <span className="truncate">{hotel.location}</span>
           </div>
+          </div>
           
           {hotel.confidence?.riskLabel && (
             <div className="mb-4">

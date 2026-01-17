@@ -4,12 +4,7 @@ export interface Hotel {
   location: string;
   imageUrl: string;
   pricePerNight: number;
-  confidenceScore?: number; // 0-100 (legacy, kept for backward compatibility)
-  confidence?: {
-    confidenceScore: number;
-    riskLabel: 'LOW' | 'MEDIUM' | 'HIGH';
-    breakdown?: any;
-  };
+  confidenceScore: number; // 0-100
   amenities: string[];
   description?: string;
 }
@@ -36,7 +31,9 @@ export interface BookingRequest {
   roomTypeId: string;
   checkInDate: string;
   checkOutDate: string;
-  userId: string;
+  guestName: string;
+  guestEmail: string;
+  totalPrice: number;
 }
 
 export interface ApiResponse<T> {

@@ -10,8 +10,6 @@ export interface Hotel {
     riskLabel: 'LOW' | 'MEDIUM' | 'HIGH';
     breakdown?: any;
   };
-  amenities: string[];
-  description?: string;
 }
 
 export interface RoomType {

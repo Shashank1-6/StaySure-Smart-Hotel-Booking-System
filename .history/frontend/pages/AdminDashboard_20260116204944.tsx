@@ -11,6 +11,7 @@ export const AdminDashboard: React.FC = () => {
     name: '',
     location: '',
     pricePerNight: '',
+    confidenceScore: '',
     imageUrl: '',
     description: ''
   });
@@ -36,6 +37,7 @@ export const AdminDashboard: React.FC = () => {
       name: hotelForm.name,
       location: hotelForm.location,
       pricePerNight: Number(hotelForm.pricePerNight),
+      confidenceScore: Number(hotelForm.confidenceScore),
       imageUrl: hotelForm.imageUrl || 'https://picsum.photos/800/600',
       amenities: ['Wifi', 'Parking', 'Restaurant'],
       description: hotelForm.description
@@ -44,7 +46,7 @@ export const AdminDashboard: React.FC = () => {
     try {
       await api.addHotel(newHotel);
       setNotification({ type: 'success', message: 'Hotel published successfully!' });
-      setHotelForm({ name: '', location: '', pricePerNight: '', imageUrl: '', description: '' });
+      setHotelForm({ name: '', location: '', pricePerNight: '', confidenceScore: '', imageUrl: '', description: '' });
     } catch (error) {
       setNotification({ type: 'error', message: 'Failed to publish hotel.' });
     } finally {
@@ -149,7 +151,7 @@ export const AdminDashboard: React.FC = () => {
                 </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Price / Night</label>
                     <div className="relative">
@@ -163,6 +165,19 @@ export const AdminDashboard: React.FC = () => {
                         placeholder="0.00"
                     />
                     </div>
+                </div>
+                <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Confidence Score</label>
+                    <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={hotelForm.confidenceScore}
+                    onChange={e => setHotelForm({...hotelForm, confidenceScore: e.target.value})}
+                    required
+                    className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                    placeholder="95"
+                    />
                 </div>
                 <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Image URL</label>

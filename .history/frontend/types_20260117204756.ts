@@ -4,12 +4,7 @@ export interface Hotel {
   location: string;
   imageUrl: string;
   pricePerNight: number;
-  confidenceScore?: number; // 0-100 (legacy, kept for backward compatibility)
-  confidence?: {
-    confidenceScore: number;
-    riskLabel: 'LOW' | 'MEDIUM' | 'HIGH';
-    breakdown?: any;
-  };
+  confidenceScore: number; // 0-100
   amenities: string[];
   description?: string;
 }

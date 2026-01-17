@@ -37,24 +37,10 @@ export const HotelCard: React.FC<HotelCardProps> = ({ hotel, searchCheckIn, sear
             </div>
           </div>
           
-          <div className="flex items-center gap-1 text-slate-500 text-sm mb-2">
+          <div className="flex items-center gap-1 text-slate-500 text-sm mb-4">
             <MapPin className="w-3.5 h-3.5" />
             <span className="truncate">{hotel.location}</span>
           </div>
-          
-          {hotel.confidence?.riskLabel && (
-            <div className="mb-4">
-              <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold uppercase tracking-wider ${
-                hotel.confidence.riskLabel === 'HIGH' 
-                  ? 'bg-red-100 text-red-700 border border-red-200' 
-                  : hotel.confidence.riskLabel === 'MEDIUM'
-                  ? 'bg-amber-100 text-amber-700 border border-amber-200'
-                  : 'bg-emerald-100 text-emerald-700 border border-emerald-200'
-              }`}>
-                Risk: {hotel.confidence.riskLabel}
-              </span>
-            </div>
-          )}
 
           <div className="flex flex-wrap gap-2 mb-6">
             {hotel.amenities && hotel.amenities.slice(0, 3).map((am) => (
