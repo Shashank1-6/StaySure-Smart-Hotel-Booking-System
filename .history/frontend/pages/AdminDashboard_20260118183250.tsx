@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { PlusCircle, Upload, CheckCircle, AlertCircle, Building2, BedDouble } from 'lucide-react';
 import { api } from '../services/api';
 import { Hotel } from '../types';
@@ -20,33 +20,12 @@ export const AdminDashboard: React.FC = () => {
     hotelId: '',
     name: '',
     price: '',
-    totalRooms: ''
+    capacity: '',
+    description: ''
   });
-
-  // Hotels for Add Room Type dropdown (all hotels, loaded on mount)
-  const [hotels, setHotels] = useState<Hotel[]>([]);
-  const [hotelsLoading, setHotelsLoading] = useState(true);
-  const [hotelsError, setHotelsError] = useState<string | null>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [notification, setNotification] = useState<{type: 'success' | 'error', message: string} | null>(null);
-
-  useEffect(() => {
-    const loadHotels = async () => {
-      setHotelsLoading(true);
-      setHotelsError(null);
-      try {
-        const list = await api.getAllHotelsForAdmin();
-        setHotels(list);
-      } catch (e) {
-        setHotelsError(e instanceof Error ? e.message : 'Failed to load hotels');
-        setHotels([]);
-      } finally {
-        setHotelsLoading(false);
-      }
-    };
-    loadHotels();
-  }, []);
 
   const handleHotelSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,22 +57,23 @@ export const AdminDashboard: React.FC = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const payload = {
-      hotelId: roomForm.hotelId,
-      name: roomForm.name,
-      price: Number(roomForm.price),
-      totalRooms: Number(roomForm.totalRooms)
+    const newRoomType = {
+        hotelId: roomForm.hotelId,
+        name: roomForm.name,
+        price: Number(roomForm.price),
+        capacity: Number(roomForm.capacity),
+        description: roomForm.description
     };
 
     try {
-      await api.addRoomType(payload);
-      setNotification({ type: 'success', message: 'Room Type added successfully!' });
-      setRoomForm({ hotelId: '', name: '', price: '', totalRooms: '' });
+        await api.addRoomType(newRoomType);
+        setNotification({ type: 'success', message: 'Room Type added successfully!' });
+        setRoomForm({ hotelId: '', name: '', price: '', capacity: '', description: '' });
     } catch (error) {
-      setNotification({ type: 'error', message: 'Failed to add room type.' });
+        setNotification({ type: 'error', message: 'Failed to add room type. Check Hotel ID.' });
     } finally {
-      setIsSubmitting(false);
-      setTimeout(() => setNotification(null), 3000);
+        setIsSubmitting(false);
+        setTimeout(() => setNotification(null), 3000);
     }
   };
 
@@ -173,7 +153,7 @@ export const AdminDashboard: React.FC = () => {
                 <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Price / Night</label>
                     <div className="relative">
-                    <span className="absolute left-4 top-3 text-slate-400">₹</span>
+                    <span className="absolute left-4 top-3 text-slate-400">$</span>
                     <input
                         type="number"
                         value={hotelForm.pricePerNight}
@@ -229,27 +209,14 @@ export const AdminDashboard: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Hotel</label>
-                    <select
+                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Hotel ID</label>
+                    <input
                         value={roomForm.hotelId}
-                        onChange={e => setRoomForm({ ...roomForm, hotelId: e.target.value })}
+                        onChange={e => setRoomForm({...roomForm, hotelId: e.target.value})}
                         required
-                        disabled={hotelsLoading}
-                        className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all disabled:opacity-60 disabled:bg-slate-50"
-                    >
-                        <option value="">
-                            {hotelsLoading ? 'Loading hotels...' : hotelsError ? 'Could not load hotels' : 'Select a hotel'}
-                        </option>
-                        {!hotelsLoading && !hotelsError && hotels.map((h) => {
-                            const id = (h as { _id?: string })._id || h.id;
-                            return (
-                                <option key={id} value={id}>{h.name} – {h.location}</option>
-                            );
-                        })}
-                    </select>
-                    {hotelsError && (
-                        <p className="text-sm text-red-600">{hotelsError}</p>
-                    )}
+                        className="w-full px-4 py-3 rounded-lg border border-slate-200 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                        placeholder="Paste Hotel ID here..."
+                    />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -257,22 +224,21 @@ export const AdminDashboard: React.FC = () => {
                         <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Room Name</label>
                         <input
                             value={roomForm.name}
-                            onChange={e => setRoomForm({ ...roomForm, name: e.target.value })}
+                            onChange={e => setRoomForm({...roomForm, name: e.target.value})}
                             required
-                            className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                            className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
                             placeholder="e.g. Ocean View Suite"
                         />
                     </div>
                     <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Rooms</label>
+                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Capacity (Guests)</label>
                         <input
                             type="number"
-                            value={roomForm.totalRooms}
-                            onChange={e => setRoomForm({ ...roomForm, totalRooms: e.target.value })}
+                            value={roomForm.capacity}
+                            onChange={e => setRoomForm({...roomForm, capacity: e.target.value})}
                             required
-                            min={1}
-                            className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
-                            placeholder="10"
+                            className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                            placeholder="2"
                         />
                     </div>
                 </div>
@@ -282,9 +248,9 @@ export const AdminDashboard: React.FC = () => {
                     <input
                         type="number"
                         value={roomForm.price}
-                        onChange={e => setRoomForm({ ...roomForm, price: e.target.value })}
+                        onChange={e => setRoomForm({...roomForm, price: e.target.value})}
                         required
-                        className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                        className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
                         placeholder="150.00"
                     />
                 </div>
@@ -292,7 +258,7 @@ export const AdminDashboard: React.FC = () => {
                 <div className="pt-4 border-t border-slate-100 flex justify-end">
                     <button
                         type="submit"
-                        disabled={isSubmitting || !roomForm.hotelId}
+                        disabled={isSubmitting}
                         className="px-8 py-3 bg-emerald-900 text-white font-medium rounded-xl hover:bg-emerald-800 transition-all shadow-lg flex items-center gap-2 disabled:opacity-70"
                     >
                         {isSubmitting ? 'Saving...' : (

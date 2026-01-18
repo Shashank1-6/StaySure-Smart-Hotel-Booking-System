@@ -66,7 +66,7 @@ export const api = {
     try {
       const response = await client.get('/availability/rooms', {
         params: {
-          hotelId: hotelId,
+          hotelId,
           checkInDate: checkIn,
           checkOutDate: checkOut,
         },
@@ -104,18 +104,6 @@ export const api = {
     }
   },
 
-  // GET: /admin/hotels – returns all hotels for admin (e.g. dropdown). x-role: ADMIN via interceptor.
-  getAllHotelsForAdmin: async (): Promise<Hotel[]> => {
-    try {
-      const response = await client.get('/admin/hotels');
-      const data = response.data;
-      const hotels = Array.isArray(data) ? data : (data.data || data.hotels || []);
-      return hotels;
-    } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Failed to load hotels');
-    }
-  },
-
   // POST: /admin/hotels
   // Interceptor will automatically add x-role: ADMIN
   addHotel: async (hotel: Hotel): Promise<ApiResponse<Hotel>> => {
@@ -127,10 +115,11 @@ export const api = {
     }
   },
 
-  // POST: /admin/room-types – payload: { hotelId, name, price, totalRooms }. x-role: ADMIN via interceptor.
-  addRoomType: async (payload: { hotelId: string; name: string; price: number; totalRooms: number }): Promise<ApiResponse<RoomType>> => {
+  // POST: /admin/room-types
+  // Interceptor will automatically add x-role: ADMIN
+  addRoomType: async (roomType: Partial<RoomType>): Promise<ApiResponse<RoomType>> => {
     try {
-      const response = await client.post('/admin/room-types', payload);
+      const response = await client.post('/admin/room-types', roomType);
       return { success: true, data: response.data };
     } catch (error) {
       throw new Error('Failed to add room type');

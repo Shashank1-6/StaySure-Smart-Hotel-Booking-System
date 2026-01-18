@@ -36,7 +36,7 @@ export const AdminDashboard: React.FC = () => {
       setHotelsLoading(true);
       setHotelsError(null);
       try {
-        const list = await api.getAllHotelsForAdmin();
+        const list = await api.getAllHotels();
         setHotels(list);
       } catch (e) {
         setHotelsError(e instanceof Error ? e.message : 'Failed to load hotels');
