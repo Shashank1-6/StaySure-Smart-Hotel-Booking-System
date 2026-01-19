@@ -60,6 +60,19 @@ StaySure is a full-stack hotel booking platform built with a backend-first appro
 
 ---
 
+## Project Screenshots
+<img width="1919" height="1079" alt="Shot1" src="https://github.com/user-attachments/assets/8e092800-2adb-4f57-93f3-f6dca5ddd84e" />
+
+<img width="1919" height="1079" alt="shot2" src="https://github.com/user-attachments/assets/e4bb2091-4f09-4473-b94a-59cd906c053e" />
+
+<img width="1920" height="1080" alt="Shot3" src="https://github.com/user-attachments/assets/5fedcc43-aa50-4c70-ac21-644b20f8db64" />
+
+<img width="1920" height="1080" alt="Shot4" src="https://github.com/user-attachments/assets/5ffb8840-dd78-4b69-8c77-d951853"/>
+
+<img width="1920" height="1080" alt="Shot5" src="https://github.com/user-attachments/assets/e235a7db-306e-4543-953f-4d7b66678b98" />
+
+
+
 ## Getting Started
 
 ### Prerequisites
@@ -144,5 +157,6 @@ Planned enhancements:
 ## Acknowledgments
 
 This project is designed as a professional learning initiative to demonstrate real-world backend design principles such as inventory safety, clean architecture, and reliable booking workflows. Inspired by modern hotel booking platforms and best engineering practices.
+
 
 
