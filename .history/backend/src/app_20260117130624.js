@@ -1,6 +1,4 @@
 const express = require("express");
-const cors = require("cors");
-
 
 const healthRoutes = require("./routes/health.routes");
 const hotelRoutes = require("./routes/hotel.routes");
@@ -10,8 +8,6 @@ const availabilityRoutes = require("./routes/availability.routes");
 const bookingRoutes = require("./routes/booking.routes");
 
 const app = express();
-app.use(cors());
-
 
 // Middleware
 app.use(express.json());

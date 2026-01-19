@@ -8,31 +8,8 @@ import { SlidersHorizontal } from 'lucide-react';
 
 type SortBy = 'default' | 'price_asc' | 'price_desc' | 'confidence_desc' | 'confidence_asc';
 
-type PriceRange = '' | '0-2000' | '2000-5000' | '5000-10000' | '10000-20000' | '20000+';
-
-const PRICE_RANGES: { value: PriceRange; label: string }[] = [
-  { value: '', label: 'Any' },
-  { value: '0-2000', label: '₹0 – 2,000' },
-  { value: '2000-5000', label: '₹2,000 – 5,000' },
-  { value: '5000-10000', label: '₹5,000 – 10,000' },
-  { value: '10000-20000', label: '₹10,000 – 20,000' },
-  { value: '20000+', label: '₹20,000+' },
-];
-
 const getConfidence = (h: Hotel): number =>
   h.confidence?.confidenceScore ?? h.confidenceScore ?? 0;
-
-const inPriceRange = (price: number, range: PriceRange): boolean => {
-  if (!range) return true;
-  switch (range) {
-    case '0-2000': return price <= 2000;
-    case '2000-5000': return price > 2000 && price <= 5000;
-    case '5000-10000': return price > 5000 && price <= 10000;
-    case '10000-20000': return price > 10000 && price <= 20000;
-    case '20000+': return price > 20000;
-    default: return true;
-  }
-};
 
 export const Home: React.FC = () => {
   const [hotels, setHotels] = useState<Hotel[]>([]);
@@ -43,7 +20,8 @@ export const Home: React.FC = () => {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [sortBy, setSortBy] = useState<SortBy>('default');
   const [minConfidence, setMinConfidence] = useState('');
-  const [priceRange, setPriceRange] = useState<PriceRange>('');
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
   const filtersRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -76,11 +54,14 @@ export const Home: React.FC = () => {
 
   const filteredAndSortedHotels = useMemo(() => {
     const minC = minConfidence === '' ? null : Number(minConfidence);
+    const minP = minPrice === '' ? null : Number(minPrice);
+    const maxP = maxPrice === '' ? null : Number(maxPrice);
 
     let list = hotels.filter((h) => {
       const conf = getConfidence(h);
       if (minC != null && !Number.isNaN(minC) && conf < minC) return false;
-      if (!inPriceRange(h.pricePerNight, priceRange)) return false;
+      if (minP != null && !Number.isNaN(minP) && h.pricePerNight < minP) return false;
+      if (maxP != null && !Number.isNaN(maxP) && h.pricePerNight > maxP) return false;
       return true;
     });
 
@@ -101,14 +82,15 @@ export const Home: React.FC = () => {
       });
     }
     return list;
-  }, [hotels, sortBy, minConfidence, priceRange]);
+  }, [hotels, sortBy, minConfidence, minPrice, maxPrice]);
 
-  const hasActiveFilters = sortBy !== 'default' || minConfidence !== '' || priceRange !== '';
+  const hasActiveFilters = sortBy !== 'default' || minConfidence !== '' || minPrice !== '' || maxPrice !== '';
 
   const resetFilters = () => {
     setSortBy('default');
     setMinConfidence('');
-    setPriceRange('');
+    setMinPrice('');
+    setMaxPrice('');
   };
 
   return (
@@ -189,16 +171,25 @@ export const Home: React.FC = () => {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Price range</label>
-                      <select
-                        value={priceRange}
-                        onChange={(e) => setPriceRange(e.target.value as PriceRange)}
-                        className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none"
-                      >
-                        {PRICE_RANGES.map((r) => (
-                          <option key={r.value || 'any'} value={r.value}>{r.label}</option>
-                        ))}
-                      </select>
+                      <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Price range (₹)</label>
+                      <div className="flex gap-2">
+                        <input
+                          type="number"
+                          min={0}
+                          placeholder="Min"
+                          value={minPrice}
+                          onChange={(e) => setMinPrice(e.target.value)}
+                          className="flex-1 px-3 py-2 rounded-lg border border-slate-200 text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none placeholder:text-slate-400"
+                        />
+                        <input
+                          type="number"
+                          min={0}
+                          placeholder="Max"
+                          value={maxPrice}
+                          onChange={(e) => setMaxPrice(e.target.value)}
+                          className="flex-1 px-3 py-2 rounded-lg border border-slate-200 text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none placeholder:text-slate-400"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
